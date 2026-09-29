@@ -1,5 +1,5 @@
 """
-app.py  -  CineMatch : Movie Recommendation & Streaming Finder
+app.py  -  cinematch : Movie Recommendation & Streaming Finder
 ================================================================
 This file is the USER INTERFACE (built with Streamlit).
 The recommendation logic lives in recommender.py.
@@ -25,9 +25,9 @@ from pathlib import Path
 import streamlit as st
 import streamlit.components.v1 as components
 
-from recommender import get_movies, get_recommendations, predict
+from recommender import get_movies, predict
 
-st.set_page_config(page_title="CineMatch - Movie Recommendations", page_icon="🎞️", layout="wide")
+st.set_page_config(page_title="cinematch - Movie Recommendations", page_icon="🎞️", layout="wide")
 
 # ---------------------------------------------------------------------------
 # 1. SETTINGS AND CONSTANTS
@@ -39,8 +39,9 @@ DEMO_NOTE = ("Demo / sample availability data - not live. Streaming availability
              "country and over time, so always check the platform before you plan your evening.")
 
 # (emoji, genre name as written in movie_data.csv)
-GENRE_BUTTONS = [("🍿", "Action"), ("🚀", "Sci-Fi"), ("😂", "Comedy"), ("🎭", "Drama"),
-                 ("🕵️", "Crime"), ("👻", "Horror"), ("❤️", "Romance"), ("🐉", "Fantasy")]
+GENRE_BUTTONS = [("🍿", "Action"), ("🚀", "Sci-Fi"), ("🎭", "Drama"), ("😂", "Comedy"),
+                 ("⚡", "Thriller"), ("❤️", "Romance"), ("🕵️", "Crime"), ("🐉", "Fantasy"),
+                 ("🧭", "Adventure"), ("👻", "Horror")]
 
 CLASSIC_TITLES = ["The Godfather", "The Matrix", "Jurassic Park", "Inception", "The Dark Knight", "Goodfellas"]
 
@@ -65,13 +66,14 @@ CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --bg: #0a0e17; 
-  --panel: #111827; 
+    --bg: #050816; 
+    --panel: #0f172a; 
   --text: #f1f5f9; 
   --text-muted: #94a3b8;
-  --accent: #06b6d4; 
-  --accent-2: #8b5cf6;
-  --gradient: linear-gradient(135deg, var(--accent), var(--accent-2));
+    --accent: #22d3ee; 
+    --accent-2: #6366f1;
+    --accent-3: #14b8a6;
+    --gradient: linear-gradient(135deg, var(--accent), var(--accent-3) 45%, var(--accent-2));
   --font-display: 'Outfit', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
 }
@@ -261,23 +263,29 @@ header[data-testid="stHeader"] { background: transparent; }
 
 /* Enhance Streamlit Buttons & Inputs */
 .stButton > button {
-  width: 100%; min-height: 2.8rem; border-radius: 14px; font-family: var(--font-body); font-weight: 700; font-size: 1rem;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid rgba(255,255,255,0.12);
-  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-  color: #e5eef8; box-shadow: 0 8px 18px rgba(0,0,0,0.26), inset 0 2px 0 rgba(255,255,255,0.08);
-  transform: perspective(1000px) rotateX(5deg) translateY(-1px);
+    width: 100%; min-height: 2.9rem; border-radius: 16px; font-family: var(--font-body); font-weight: 800; font-size: 0.98rem;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease; border: 1px solid rgba(255,255,255,0.12);
+    background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+    color: #e5eef8; box-shadow: 0 10px 22px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.14);
+    transform: perspective(1000px) translateY(-1px) rotateX(6deg);
+    position: relative;
+    overflow: hidden;
 }
 .stButton > button:hover {
-  border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.08);
-  transform: perspective(1000px) rotateX(0deg) translateY(-4px) scale(1.01);
-  box-shadow: 0 14px 28px rgba(0,0,0,0.34), 0 0 18px rgba(6,182,212,0.16);
+    border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.1);
+    transform: perspective(1000px) rotateX(0deg) translateY(-4px) scale(1.01);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.36), 0 0 20px rgba(34,211,238,0.14);
+}
+.stButton > button:active {
+    transform: perspective(1000px) translateY(2px) scale(0.99);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 .stButton > button[kind="primary"] {
-  background: linear-gradient(135deg, rgba(6,182,212,0.9), rgba(139,92,246,0.9));
-  border: none; color: #fff; box-shadow: 0 12px 26px rgba(6,182,212,0.22), inset 0 1px 0 rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, rgba(34,211,238,0.95), rgba(99,102,241,0.95));
+    border: none; color: #fff; box-shadow: 0 14px 28px rgba(34,211,238,0.22), inset 0 1px 0 rgba(255,255,255,0.2);
 }
 .stButton > button[kind="primary"]:hover {
-  box-shadow: 0 16px 30px rgba(139, 92, 246, 0.4), 0 0 20px rgba(6,182,212,0.18);
+    box-shadow: 0 18px 34px rgba(99, 102, 241, 0.34), 0 0 20px rgba(34,211,238,0.18);
   transform: perspective(1000px) rotateX(0deg) translateY(-5px) scale(1.02);
 }
 div[data-baseweb="select"] > div { border-color: rgba(255,255,255,0.1); border-radius: 12px; background: rgba(0,0,0,0.3) !important; transition: border-color 0.2s; }
@@ -525,9 +533,27 @@ div[data-baseweb="select"] > div:hover { border-color: var(--accent); }
     .hero p { font-size: 1rem; }
     .section-title { font-size: 1.5rem; }
     .ticket-title { font-size: 2rem; }
+    .quote-card { padding: 1.3rem 1.1rem 1rem; transform: none; }
+    .quote-text { font-size: 1.6rem; }
+    .quote-mark { font-size: 3.5rem; margin-bottom: -0.6rem; }
+    .hero-panel, .hero-spotlight { padding: 1rem; border-radius: 20px; }
+    .hero-badges { gap: 0.4rem; }
+    .hero-badge { font-size: 0.78rem; padding: 0.4rem 0.7rem; }
+    .hero-stats { gap: 0.55rem; }
+    .stat-card { padding: 0.85rem 0.85rem; border-radius: 14px; }
+    .stat-card strong { font-size: 0.98rem; }
+    .section-kicker { margin-top: 1.5rem; font-size: 0.75rem; }
+    .movie-card { margin-bottom: 1rem; }
+    .spotlight-meta { padding: 0.75rem 0.7rem 0.9rem; }
+    .spotlight-title { font-size: 0.95rem; }
+    .spotlight-sub { font-size: 0.75rem; }
+    .movie-link:hover .movie-card,
+    .movie-link:focus-visible .movie-card {
+        transform: translateY(-4px);
+    }
     div[data-testid="stHorizontalBlock"] { gap: 0.75rem; }
     div[data-testid="column"] { min-width: 0 !important; }
-    .stButton > button { min-height: 2.5rem; }
+    .stButton > button { min-height: 2.6rem; font-size: 0.9rem; }
 }
 </style>
 """
@@ -645,16 +671,16 @@ def toggle_watchlist(title):
     """Add the movie to the watchlist, or remove it if it is already there."""
     if title in st.session_state.watchlist:
         st.session_state.watchlist.remove(title)
-        st.session_state.flash = f"Removed '{title}' from your watchlist."
+        st.session_state.flash = f"Removed '{title}' from your playlist."
     else:
         st.session_state.watchlist.append(title)
-        st.session_state.flash = f"Added '{title}' to your watchlist."
+        st.session_state.flash = f"Added '{title}' to your playlist."
 
 
 def watchlist_button(title, key):
     """A button that adds/removes one movie. The page reloads after a click."""
     saved = title in st.session_state.watchlist
-    label = "♥ In your watchlist (click to remove)" if saved else "♡ Add to Watchlist"
+    label = "♥ In your playlist (click to remove)" if saved else "♡ Add to Playlist"
     if st.button(label, key=key, type="secondary" if saved else "primary"):
         toggle_watchlist(title)
         st.rerun()
@@ -726,6 +752,22 @@ def section(title, subtitle=""):
     st.markdown(f'<div class="section-title">{title}</div>', unsafe_allow_html=True)
     if subtitle:
         st.markdown(f'<p class="section-sub">{subtitle}</p>', unsafe_allow_html=True)
+
+
+def render_genre_controls(selected_genre):
+    """Render genre buttons in rows so they stay usable on small screens."""
+    for row_index in range(0, len(GENRE_BUTTONS), 4):
+        row = GENRE_BUTTONS[row_index:row_index + 4]
+        columns = st.columns(len(row))
+        for column, (emoji, genre) in zip(columns, row):
+            with column:
+                is_selected = selected_genre == genre
+                button_label = f"{emoji} {genre}"
+                button_key = f"home_genre_{row_index}_{genre.lower().replace(' ', '_').replace('-', '_')}"
+                if st.button(button_label, key=button_key, type="primary" if is_selected else "secondary"):
+                    st.session_state.classic_visible_count = 8
+                    st.session_state.selected_genre = "All" if is_selected else genre
+                    st.rerun()
 
 
 def spotlight_html(movie):
@@ -801,15 +843,11 @@ if not st.session_state.selected_movie:
     )
 
     st.markdown('<div class="section-kicker">Choose a mood</div>', unsafe_allow_html=True)
-    genre_buttons = ["All", "Action", "Sci-Fi", "Drama", "Comedy", "Thriller", "Romance", "Crime", "Fantasy", "Adventure", "Horror"]
-    genre_columns = st.columns(len(genre_buttons))
-    for column, genre in zip(genre_columns, genre_buttons):
-        with column:
-            is_selected = st.session_state.selected_genre == genre
-            if st.button(f"{genre}", key=f"home_genre_{genre}", type="primary" if is_selected else "secondary"):
-                st.session_state.classic_visible_count = 8
-                st.session_state.selected_genre = "All" if is_selected else genre
-                st.rerun()
+    if st.button("All", key="home_genre_all", type="primary" if st.session_state.selected_genre == "All" else "secondary"):
+        st.session_state.classic_visible_count = 8
+        st.session_state.selected_genre = "All"
+        st.rerun()
+    render_genre_controls(st.session_state.selected_genre)
 
     selected_genre = st.session_state.selected_genre
     if selected_genre == "All":
@@ -860,11 +898,11 @@ else:
     st.markdown(f'<div class="demo-note">{DEMO_NOTE}</div>', unsafe_allow_html=True)
     st.markdown("<hr style='border-color:rgba(255,255,255,0.05); margin:3rem 0;'>", unsafe_allow_html=True)
 
-    if st.button("Generate movies like this", key="generate_recommendations", type="primary"):
+    if st.button("Predict movies like this", key="generate_recommendations", type="primary"):
         st.session_state.show_recommendations = True
 
     if st.session_state.get("show_recommendations"):
-        section("If you like this, you would also love...", f"Machine-learning picks inspired by {esc(selected['title'])}.")
+        section("If you like this, you would also love...", f"Machine-learning predictions inspired by {esc(selected['title'])}.")
         all_similar = predict(selected["title"], n=8)
         if all_similar.empty:
             st.info("No similar films found in our vault.")
@@ -872,12 +910,23 @@ else:
             render_grid(all_similar, prefix="similar_movies", per_row=4)
 
 st.markdown("<br><br>", unsafe_allow_html=True)
-with st.expander("♥ My Watchlist"):
-    if not st.session_state.watchlist:
-        st.info("Your watchlist is empty. Click ♡ Add to Watchlist on any film to save it here.")
-    else:
-        saved_movies = movies[movies["title"].isin(st.session_state.watchlist)]
-        render_grid(saved_movies, prefix="saved", per_row=4, show_remove=True)
+section("My Playlist", "Saved movies stay here so you can come back to them later.")
+playlist_cols = st.columns([1, 3])
+with playlist_cols[0]:
+    if st.session_state.watchlist and st.button("Clear playlist", key="clear_playlist", type="secondary"):
+        st.session_state.watchlist = []
+        st.session_state.flash = "Playlist cleared."
+        st.rerun()
+with playlist_cols[1]:
+    if st.session_state.watchlist:
+        st.caption(f"{len(st.session_state.watchlist)} movie(s) saved")
 
-st.markdown('<div class="footer">CineMatch<br>For the classics, the deep cuts, and the next obsession.</div>', unsafe_allow_html=True)
+if not st.session_state.watchlist:
+    st.info("Your playlist is empty. Click ♡ Add to Playlist on any film to save it here.")
+else:
+    saved_titles = [title for title in st.session_state.watchlist if title in set(movies["title"].tolist())]
+    saved_movies = movies.set_index("title").loc[saved_titles].reset_index()
+    render_grid(saved_movies, prefix="saved", per_row=4, show_remove=True)
+
+st.markdown('<div class="footer">cinematch by rudra-hue<br>For the classics, the deep cuts, and the next obsession.</div>', unsafe_allow_html=True)
 

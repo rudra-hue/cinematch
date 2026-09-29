@@ -1,7 +1,7 @@
-# 🎬 CineMatch — Movie Recommendation & Streaming Finder
+# 🎬 cinematch — Movie Recommendation & Streaming Finder
 
 A college project built with **Python, Streamlit, Pandas and Scikit-learn**.
-Pick a movie → CineMatch recommends similar movies and shows where to watch them.
+Pick a movie → cinematch recommends similar movies and shows where to watch them.
 
 ---
 
@@ -16,7 +16,7 @@ source venv/bin/activate       # Mac / Linux
 # 2. install the packages
 pip install -r requirements.txt
 
-# 3. start the app (run this inside the CineMatch folder)
+# 3. start the app (run this inside the cinematch folder)
 streamlit run app.py
 ```
 
@@ -28,7 +28,7 @@ To test only the recommender (no web page): `python recommender.py`
 ## Project structure
 
 ```text
-CineMatch/
+cinematch/
 │
 ├── app.py                  ← The web page (Streamlit user interface)
 ├── recommender.py          ← The machine-learning part (TF-IDF + cosine similarity)
@@ -65,7 +65,7 @@ CineMatch/
 | `language` | `English` | |
 | `director` | `Christopher Nolan` | |
 | `cast` | `Matthew McConaughey\|Anne Hathaway\|…` | Separated by `\|` |
-| `poster_url` | *(empty)* | Optional web link to a poster. If empty, CineMatch looks in `assets/images/`, and if there is no image it draws a vintage title poster. |
+| `poster_url` | *(empty)* | Optional web link to a poster. If empty, cinematch looks in `assets/images/`, and if there is no image it draws a vintage title poster. |
 | `streaming_platform` | `Netflix\|Prime Video` | **Demo / sample data** – see the warning below |
 
 > ⚠️ **About the streaming data:** the `streaming_platform` column is **sample data made up for the demonstration**. It is *not* live and *not* verified. Real availability changes by country and over time. The app labels it as demo data everywhere it is shown.
@@ -75,7 +75,7 @@ CineMatch/
 
 ## 1. Introduction
 
-CineMatch is a small web application that helps people choose a movie. The user selects a movie they like, and CineMatch suggests similar movies and shows on which streaming platforms they can be watched.
+cinematch is a small web application that helps people choose a movie. The user selects a movie they like, and cinematch suggests similar movies and shows on which streaming platforms they can be watched.
 
 ## 2. Problem Statement
 

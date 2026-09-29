@@ -1,5 +1,5 @@
 """
-recommender.py  -  the "brain" of CineMatch
+recommender.py  -  the "brain" of cinematch
 =============================================
 This file contains ONLY the recommendation logic (no Streamlit code).
 
